@@ -16,15 +16,13 @@ namespace mongoDriver
             try
             {
                 data = new DataSet();
-                if (data.getWorkingDir())
-                    Console.WriteLine($"Found working directory: {data.WorkingDir}");
-                else
-                    Environment.Exit(1);
+                if (data.getDataDirectory())
+                    Console.WriteLine($"Found working directory: {data.DataDir}");
             }
             catch (DirectoryNotFoundException err)
             {
-                Console.WriteLine($"The file storing data was not found. " +
-                    $"Please check that the directory name or path was not changed:\n{err}");
+                Console.WriteLine($"The directory containing data was not found. Please check that the directory name or path was not changed:\n{err}");
+                Environment.Exit(1);
             }
 
             /*

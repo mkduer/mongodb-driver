@@ -11,17 +11,17 @@ namespace mongoDriver.Tests
         public void findDirectory_directoryFoundInPath(String path)
         {
             DataSet data = new DataSet();
-            data.getWorkingDir(path);
-            bool containTrue = data.WorkingDir.Contains("mongoDriver");
+            data.getWorkingDirectory(path);
+            bool containTrue = data.DataDir.Contains("mongoDriver");
             Assert.True(containTrue);
         }
 
         [Theory]
         [InlineData("Somefilepath/mongodb-driver/mongoDriver/random/pathDetails")]
-        public void findDirectory_getWorkingDirSuccessful(String path)
+        public void findDirectory_getDataDirSuccessful(String path)
         {
             DataSet data = new DataSet();
-            Assert.True(data.getWorkingDir(path));
+            Assert.True(data.getWorkingDirectory(path));
         }
 
         [Theory]
@@ -29,7 +29,7 @@ namespace mongoDriver.Tests
         public void findDirectory_directoryNotFound(String path)
         {
             DataSet data = new DataSet();
-            Assert.Throws<DirectoryNotFoundException>(() => data.getWorkingDir(path));
+            Assert.Throws<DirectoryNotFoundException>(() => data.getWorkingDirectory(path));
         }
     }
 }

@@ -11,28 +11,28 @@ namespace mongoDriver
         public String Connection
         {
             get { return this._connection; }
-            set { _connection = value; }
+            set { this._connection = value; }
         }
 
         private MongoClient _client;
         public MongoClient Client
         {
             get { return this._client; }
-            set { _client = value; }
+            set { this._client = value; }
         }
 
         private IMongoDatabase _db;
         public IMongoDatabase Db
         {
             get { return this._db; }
-            set { _db = value; }
+            set { this._db = value; }
         }
 
         private IMongoCollection<BsonDocument> _collection;
         public IMongoCollection<BsonDocument> Collection
         {
             get { return this._collection; }
-            set { _collection = value; }
+            set { this._collection = value; }
         }
 
         /// <summary>Establishes connection to cluster</summary>
