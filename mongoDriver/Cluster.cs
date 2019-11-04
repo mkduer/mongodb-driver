@@ -35,24 +35,38 @@ namespace mongoDriver
             set { _collection = value; }
         }
 
+        /// <summary>Establishes connection to cluster</summary>
+        /// <returns>True if connection was established, False, otherwise</returns>
         public bool establishConnection()
         {
             return this._establishConnection();
         }
 
+        /// <summary>Accesses and returns a specified database</summary>
+        /// <param name="dbName">The database name</param>
+        /// <returns>True if database was successfully accessed, false otherwise</returns>
         public bool accessDb(String databaseName)
         {
             return this._accessDb(databaseName);
         }
+
+        /// <summary>Accesses and returns a specified collection</summary>
+        /// <param name="collectionName">The collection name</param>
+        /// <returns>True if successfully accessed, False, otherwise</returns>
         public bool accessCollection(String collectionName)
         {
             return this._accessCollection(collectionName);
         }
+
+        /// <summary>Counts the number of total documents in a collection</summary>
+        /// <returns>A long integer with a count of documents or zero</returns>
         public long countDocuments()
         {
             return this._countDocuments();
         }
 
+        /// <summary>Display document contents in a specific format that is defaulted to BSON</summary>
+        /// <param name="filter">A BsonDocument object to use as a filter for like objects</param>
         public void displayCollectionDocuments(String displayType = "BSON")
         {
             BsonDocument filter = new BsonDocument();
@@ -72,7 +86,7 @@ namespace mongoDriver
         }
 
         /// <summary>Establishes connection to cluster</summary>
-        /// <returns>Returns an initialized MongoClient</returns>
+        /// <returns>True if connection was established, False, otherwise</returns>
         private bool _establishConnection()
         {
             try
@@ -89,7 +103,7 @@ namespace mongoDriver
 
         /// <summary>Accesses and returns a specified database</summary>
         /// <param name="dbName">The database name</param>
-        /// <returns>ImongoDatabase type that is the database</returns>
+        /// <returns>True if database was successfully accessed, false otherwise</returns>
         private bool _accessDb(String dbName)
         {
             try
@@ -106,7 +120,7 @@ namespace mongoDriver
 
         /// <summary>Accesses and returns a specified collection</summary>
         /// <param name="collectionName">The collection name</param>
-        /// <returns>Returns an ImongoCollection with a list of BSON documents</returns>
+        /// <returns>True if successfully accessed, False, otherwise</returns>
         private bool _accessCollection(String collectionName)
         {
             try
@@ -122,7 +136,7 @@ namespace mongoDriver
         }
 
         /// <summary>Counts the number of total documents in a collection</summary>
-        /// <returns></returns>
+        /// <returns>A long integer with a count of documents or zero</returns>
         private long _countDocuments()
         {
             BsonDocument filter = new BsonDocument();
