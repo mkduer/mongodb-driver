@@ -81,7 +81,7 @@ namespace mongoDriver
             }
             catch (MongoConfigurationException err)
             {
-                Console.WriteLine($"\nFailed to connect: {err}");
+                Console.WriteLine($"\nFailed to connect:\n{err}");
                 throw new UnauthorizedAccessException();
             }
             return true;
@@ -92,7 +92,15 @@ namespace mongoDriver
         /// <returns>ImongoDatabase type that is the database</returns>
         private bool _accessDb(String dbName)
         {
-            this._db = this._client.GetDatabase(dbName);
+            try
+            {
+                this._db = this._client.GetDatabase(dbName);
+            }
+            catch (ArgumentException err)
+            {
+                Console.WriteLine($"\nThe database name must be composed of valid characters:\n{err}");
+                throw new ArgumentException();
+            }
             return true;
         }
 
@@ -101,15 +109,28 @@ namespace mongoDriver
         /// <returns>Returns an ImongoCollection with a list of BSON documents</returns>
         private bool _accessCollection(String collectionName)
         {
-            this._collection = this._db.GetCollection<BsonDocument>(collectionName);
+            try
+            {
+                this._collection = this._db.GetCollection<BsonDocument>(collectionName);
+            }
+            catch (ArgumentException err)
+            {
+                Console.WriteLine($"\nThe collection name must be composed of valid characters:\n{err}");
+                throw new ArgumentException();
+            }
             return true;
         }
 
+        /// <summary>Counts the number of total documents in a collection</summary>
+        /// <returns></returns>
         private long _countDocuments()
         {
             BsonDocument filter = new BsonDocument();
             return this._collection.CountDocuments(filter);
         }
+
+        /// <summary>Display document contents in BSON</summary>
+        /// <param name="filter">A BsonDocument object to use as a filter for like objects</param>
         private void _displayCollectionDocumentsBSON(BsonDocument filter)
         {
             using (var cursor = this._collection.Find(filter).ToCursor())
@@ -123,6 +144,9 @@ namespace mongoDriver
                 }
             }
         }
+
+        /// <summary>Display document contents in JSON</summary>
+        /// <param name="filter">A BsonDocument object to use as a filter for like objects</param>
         private void _displayCollectionDocumentsJSON(BsonDocument filter)
         {
             using (var cursor = this._collection.Find(filter).ToCursor())
@@ -137,6 +161,9 @@ namespace mongoDriver
                 }
             }
         }
+
+        /// <summary>Display document contents in JSON with added formatting for pretty display</summary>
+        /// <param name="filter">A BsonDocument object to use as a filter for like objects</param>
         private void _displayCollectionDocumentsJSONformatted(BsonDocument filter)
         {
             using (var cursor = this._collection.Find(filter).ToCursor())
