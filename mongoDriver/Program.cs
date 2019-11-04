@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace mongoDriver
 {
@@ -7,22 +8,37 @@ namespace mongoDriver
         static void Main(string[] args)
         {
             Console.WriteLine("Hello From Driver!");
-
+            DataSet data = null;
             Cluster cluster = null;
 
+            // If data needs to be imported, find the workingDirectory containing
+            // the dataset and import it. Exit the program if the import failed.
+            try
+            {
+                data = new DataSet();
+                if (data.getWorkingDir())
+                    Console.WriteLine($"Found working directory: {data.WorkingDir}");
+                else
+                    Environment.Exit(1);
+            }
+            catch (DirectoryNotFoundException err)
+            {
+                Console.WriteLine($"The file storing data was not found. " +
+                    $"Please check that the directory name or path was not changed:\n{err}");
+            }
+
+            /*
+
+            // Connect to the existing cluster, database, and collection(s) to run queries
             if (connectCluster(ref cluster))
             {
-
                 // provide statistics on cluster as proof-of-concept (e.g. count, document contents)
                 Console.WriteLine($"total documents in collection: {cluster.countDocuments()}");
                 cluster.displayCollectionDocuments();
             }
-            else 
-            { 
-                Environment.Exit(1);
-            }
+            */
 
-            // Print out to confirm the program is ending correctly
+            // Print out to confirm the program is ending
             Console.WriteLine("Program successfully ended");
         }
 
