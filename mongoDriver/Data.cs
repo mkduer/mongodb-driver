@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace mongoDriver
 {
@@ -35,6 +37,34 @@ namespace mongoDriver
         public bool getWorkingDirectory(String path = "")
         {
             return _getWorkingDirectory(path);
+        }
+
+        /// <summary>Given a paramterized path, provides all of the subdirectories as a JSON document</summary>
+        /// <param name="currentDir">
+        /// The current directory that is being searched, which defaults to an empty string. 
+        /// (note: if a valid directory is not provided, the top-level data directory is used inside the program)
+        /// </param>
+        /// <returns>JSON of subdirectory</returns>
+        public String getSubDirectories(String currentDir = "")
+        {
+            if (currentDir == "")
+                currentDir = _dataDir;
+
+            var items = _getSubDirectories(currentDir + "\\");
+            return JsonConvert.SerializeObject(items);
+        }
+
+        /// <summary>Have data imported into cluster</summary>
+        /// <param name="JSONDocument">JSON document to import</param>
+        /// <returns>True if import was successful, False, otherwise</returns>
+        public bool importData(String JSONDocument)
+        {
+            if (string.IsNullOrEmpty(JSONDocument))
+                return false;
+
+            // TODO: next steps are importing data
+            Console.WriteLine("\nNext step is importing data into Atlas");
+            return true;
         }
 
         /// <summary>
@@ -87,6 +117,31 @@ namespace mongoDriver
                 this._dataDir = this._dataDir.Replace(removeStr, "");
 
             return true;
+        }
+
+        /// <summary>Given a paramterized path, provides all of the subdirectories as a list of strings</summary>
+        /// <param name="currentDir">The current directory that is being searched</param>
+        /// <returns>A list of strings representing each directory or null if invalid</returns>
+        private Queue<String> _getSubDirectories(String currentDir)
+        {
+            Queue<String> itemsQueue = null;
+
+            // if the current directory is an invalid path, return null
+            if (string.IsNullOrEmpty(currentDir))
+                return itemsQueue;
+
+            // Grab subdirectories and enqueue
+            String[] subDirectories = Directory.GetDirectories(currentDir);
+
+            if (subDirectories.Length > 0) {
+                itemsQueue = new Queue<string>();
+            }
+
+            foreach (String dir in subDirectories) { 
+                String newDir = dir.Replace(currentDir, "");
+                itemsQueue.Enqueue(newDir);
+            }
+            return itemsQueue;
         }
     }
 }
