@@ -7,7 +7,6 @@ namespace mongoDriver
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello From Driver!");
             DataSet data = null;
             Cluster cluster = null;
 
@@ -17,11 +16,20 @@ namespace mongoDriver
             {
                 data = new DataSet();
                 if (data.getDataDirectory())
-                    Console.WriteLine($"Found working directory: {data.DataDir}");
+                { 
+                    Console.WriteLine($"\nFound working directory: {data.DataDir}");
+                    var JSONdocument = data.getSubDirectories();
+                    Console.WriteLine($"\nJSON of subdirectories: \n{JSONdocument}");
+
+                    if (data.importData(JSONdocument))
+                        Console.WriteLine("\nYay! Data was successfully imported");
+                    else
+                        Console.WriteLine("\nCrap -- some error with importing data. Further investigation needed.");
+                }
             }
             catch (DirectoryNotFoundException err)
             {
-                Console.WriteLine($"The directory containing data was not found. Please check that the directory name or path was not changed:\n{err}");
+                Console.WriteLine($"\nThe directory containing data was not found. Please check that the directory name or path was not changed:\n{err}");
                 Environment.Exit(1);
             }
 
@@ -37,7 +45,7 @@ namespace mongoDriver
             */
 
             // Print out to confirm the program is ending
-            Console.WriteLine("Program successfully ended");
+            Console.WriteLine("\nProgram successfully ended");
         }
 
         /// <summary>establish connection with cluster, create specific database and collection variables</summary>
