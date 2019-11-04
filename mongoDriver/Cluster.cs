@@ -153,7 +153,7 @@ namespace mongoDriver
                 {
                     foreach (var doc in cursor.Current)
                     {
-                        Console.WriteLine($"BSON doc: \n{doc}\n\n");
+                        Console.WriteLine($"\nBSON doc: \n{doc}\n\n");
                     }
                 }
             }
@@ -170,7 +170,7 @@ namespace mongoDriver
                     foreach (var doc in cursor.Current)
                     {
                         String docJSON = doc.ToJson();
-                        Console.WriteLine($"JSON doc: \n{docJSON}\n\n");
+                        Console.WriteLine($"\nJSON doc: \n{docJSON}\n\n");
                     }
                 }
             }
@@ -187,7 +187,7 @@ namespace mongoDriver
                     foreach (var doc in cursor.Current)
                     {
                         String docFormatted = JsonConvert.SerializeObject(doc.ToJson(), Formatting.Indented);
-                        Console.WriteLine($"JSON doc: \n{docFormatted}\n\n");
+                        Console.WriteLine($"\nJSON doc: \n{docFormatted}\n\n");
                     }
                 }
             }
