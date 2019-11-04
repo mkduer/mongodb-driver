@@ -4,13 +4,13 @@ using Xunit;
 
 namespace mongoDriver.Tests
 {
-    public class DataSetTest
+    public class DataTest
     {
         [Theory]
         [InlineData("Somefilepath/mongodb-driver/mongoDriver/random/pathDetails")]
         public void findDirectory_directoryFoundInPath(String path)
         {
-            DataSet data = new DataSet();
+            Data data = new Data();
             data.getWorkingDirectory(path);
             bool containTrue = data.DataDir.Contains("mongoDriver");
             Assert.True(containTrue);
@@ -20,7 +20,7 @@ namespace mongoDriver.Tests
         [InlineData("Somefilepath/mongodb-driver/mongoDriver/random/pathDetails")]
         public void findDirectory_getDataDirSuccessful(String path)
         {
-            DataSet data = new DataSet();
+            Data data = new Data();
             Assert.True(data.getWorkingDirectory(path));
         }
 
@@ -28,7 +28,7 @@ namespace mongoDriver.Tests
         [InlineData("Somefilepath/mongodb-driver/invalidString/random/pathDetails")]
         public void findDirectory_directoryNotFound(String path)
         {
-            DataSet data = new DataSet();
+            Data data = new Data();
             Assert.Throws<DirectoryNotFoundException>(() => data.getWorkingDirectory(path));
         }
     }

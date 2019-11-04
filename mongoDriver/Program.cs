@@ -7,14 +7,14 @@ namespace mongoDriver
     {
         static void Main(string[] args)
         {
-            DataSet data = null;
+            Data data = null;
             Cluster cluster = null;
 
             // If data needs to be imported, find the workingDirectory containing
             // the dataset and import it. Exit the program if the import failed.
             try
             {
-                data = new DataSet();
+                data = new Data();
                 if (data.getDataDirectory())
                 { 
                     Console.WriteLine($"\nFound working directory: {data.DataDir}");
