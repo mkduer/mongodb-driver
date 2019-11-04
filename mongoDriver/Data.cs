@@ -54,19 +54,6 @@ namespace mongoDriver
             return JsonConvert.SerializeObject(items);
         }
 
-        /// <summary>Have data imported into cluster</summary>
-        /// <param name="JSONDocument">JSON document to import</param>
-        /// <returns>True if import was successful, False, otherwise</returns>
-        public bool importData(String JSONDocument)
-        {
-            if (string.IsNullOrEmpty(JSONDocument))
-                return false;
-
-            // TODO: next steps are importing data
-            Console.WriteLine("\nNext step is importing data into Atlas");
-            return true;
-        }
-
         /// <summary>
         /// Retrieves current working directory based on the OS's current file path
         /// relative to the "mongoDriver" directory

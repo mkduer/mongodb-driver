@@ -85,6 +85,20 @@ namespace mongoDriver
             }
         }
 
+        /// <summary>Import parameterized data into collection</summary>
+        /// <param name="JSONDocument">JSON document to import</param>
+        /// <returns>True if import was successful, False, otherwise</returns>
+        public bool importData(String JSONDocument)
+        {
+            if (string.IsNullOrEmpty(JSONDocument))
+                return false;
+
+            // TODO: next steps are importing data
+            Console.WriteLine("\nNext step is importing data into Atlas");
+            return true;
+        }
+
+
         /// <summary>Establishes connection to cluster</summary>
         /// <returns>True if connection was established, False, otherwise</returns>
         private bool _establishConnection()
