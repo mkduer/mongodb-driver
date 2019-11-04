@@ -36,8 +36,8 @@ namespace mongoDriver
         {
             cluster = new Cluster();
             cluster.Connection = "mongodb+srv://test:test@airbnb-oluyv.mongodb.net/test?retryWrites=true&w=majority";
-            String dbName = "dbname";
-            String collectionName = "collectionname";
+            String dbName = "testingDB";
+            String collectionName = "testingCollection";
 
             try
             {
