@@ -26,7 +26,7 @@ namespace mongoDriver.Tests
         }
 
         [Theory]
-        [InlineData("dbname")]
+        [InlineData("testingDB")]
         public void accessDb_accessSuccessful(String db)
         {
 
@@ -48,13 +48,13 @@ namespace mongoDriver.Tests
         }
 
         [Theory]
-        [InlineData("collectionname")]
+        [InlineData("testingCollection")]
         public void accessCollection_accessSuccessful(String collection)
         {
             Cluster cluster = new Cluster();
             cluster.Connection = "mongodb+srv://test:test@airbnb-oluyv.mongodb.net/test?retryWrites=true&w=majority";
             cluster.establishConnection();
-            cluster.accessDb("dbname");
+            cluster.accessDb("testingDB");
             Assert.True(cluster.accessCollection(collection));
         }
 
@@ -65,7 +65,7 @@ namespace mongoDriver.Tests
             Cluster cluster = new Cluster();
             cluster.Connection = "mongodb+srv://test:test@airbnb-oluyv.mongodb.net/test?retryWrites=true&w=majority";
             cluster.establishConnection();
-            cluster.accessDb("dbname");
+            cluster.accessDb("testingDB");
             Assert.Throws<ArgumentException>(() => cluster.accessCollection(collection));
         }
     }
