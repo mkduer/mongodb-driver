@@ -86,27 +86,15 @@ namespace mongoDriver
         }
 
         /// <summary>Import parameterized data into collection</summary>
-        /// <param name="JSONdocument">JSON document to import</param>
-        /// <returns>True if import was successful, False, otherwise</returns>
-        public bool importData(String JSONdocument)
+        /// <param name="data">A BSON document of data</param>
+        /// <returns>True if import was successful, False, otherwise or if null</returns>
+        public void importData(BsonDocument data)
         {
-            if (string.IsNullOrEmpty(JSONdocument))
-                return false;
+            if (data.IsBsonNull)
+                return;
 
-            // convert JSON to BSON document
-            // source: file:\C:\Users\mduer\git\mongodb-driver\mongoDriver\bin\Debug\netcoreapp3.0
-
-            Console.WriteLine($"JSON: {JSONdocument}");
-            Console.WriteLine("Next Step: convert JSON to BSON...WIP");
-            /*
-            foreach (var item in JSONdocument) { 
-                BsonDocument doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(item);
-                _collection.InsertOne(doc);
-            }
-            */
-            return true;
+            this._importData(data);
         }
-
 
         /// <summary>Establishes connection to cluster</summary>
         /// <returns>True if connection was established, False, otherwise</returns>
@@ -186,14 +174,14 @@ namespace mongoDriver
         /// <param name="collectionName">The name of the collection to create</param>
         public void createCollection(String collectionName)
         {
-            _createCollection(collectionName);
+            this._createCollection(collectionName);
         }
 
         /// <summary>Drop a collection in the cluster</summary>
         /// <param name="collectionName">The name of the collection to drop</param>
         public void dropCollection(String collectionName)
         {
-            _dropCollection(collectionName);
+            this._dropCollection(collectionName);
         }
 
         /// <summary>Display document contents in JSON</summary>
@@ -234,14 +222,22 @@ namespace mongoDriver
         /// <param name="collectionName">The name of the collection to create</param>
         private void _createCollection(String collectionName)
         {
-            _db.CreateCollection(collectionName);
+            this._db.CreateCollection(collectionName);
         }
 
         /// <summary>Drop a collection in the cluster</summary>
         /// <param name="collectionName">The name of the collection to drop</param>
         private void _dropCollection(String collectionName)
         {
-            _db.DropCollection(collectionName);
+            this._db.DropCollection(collectionName);
+        }
+
+        /// <summary>Import parameterized data into collection</summary>
+        /// <param name="data">A BSON document of data</param>
+        /// <returns>True if import was successful, False, otherwise or if null</returns>
+        public void _importData(BsonDocument data)
+        {
+            this._collection.InsertOne(data);
         }
     }
 }

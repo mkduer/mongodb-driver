@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MongoDB.Bson;
 
 namespace mongoDriver
 {
@@ -9,7 +10,7 @@ namespace mongoDriver
         {
             Data data = null;
             Cluster cluster = null;
-            String countries = "";
+            BsonDocument countries = null;
 
             // If data needs to be imported, find the workingDirectory containing
             // the dataset and import it. Exit the program if the import failed.
@@ -19,7 +20,7 @@ namespace mongoDriver
                 if (data.getDataDirectory())
                 { 
                     Console.WriteLine($"\nFound working directory: {data.DataDir}");
-                    countries = data.getSubDirectories();
+                    countries = data.getSubDirectories("countries");
                 }
             }
             catch (DirectoryNotFoundException err)
@@ -43,13 +44,8 @@ namespace mongoDriver
 
                     // Insert data
                     Console.WriteLine($"\nAttempting to import JSON data.");
-                    if (cluster.importData(countries))
-                        Console.WriteLine("\nYay! Data was successfully imported. Validate by check Atlas.");
-                    else
-                    {
-                        Console.WriteLine("\nCrap -- some error with importing data. Further investigation needed.");
-                        Environment.Exit(1);
-                    }
+                    cluster.importData(countries);
+                    Console.WriteLine("\nYay! Data was successfully imported. Validate by check Atlas.");
 
                 }
                 catch (TimeoutException err)
@@ -103,5 +99,4 @@ namespace mongoDriver
             return false;
         }
     }
-
 }

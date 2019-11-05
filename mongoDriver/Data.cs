@@ -1,7 +1,6 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+using MongoDB.Bson;
 
 namespace mongoDriver
 {
@@ -39,19 +38,15 @@ namespace mongoDriver
             return _getWorkingDirectory(path);
         }
 
-        /// <summary>Given a paramterized path, provides all of the subdirectories as a JSON document</summary>
-        /// <param name="currentDir">
-        /// The current directory that is being searched, which defaults to an empty string. 
-        /// (note: if a valid directory is not provided, the top-level data directory is used inside the program)
-        /// </param>
-        /// <returns>JSON of subdirectory</returns>
-        public String getSubDirectories(String currentDir = "")
+        /// <summary>Given a paramterized path, provides all of the subdirectories as a BSON document</summary>
+        /// <param name="currentDir">The current directory to search for subdirectories</param>
+        /// <returns>A BSON document representing each directory or null if invalid/empty</returns>
+        public BsonDocument getSubDirectories(String currentDir = "")
         {
             if (currentDir == "")
                 currentDir = _dataDir;
 
-            var items = _getSubDirectories(currentDir + "\\");
-            return JsonConvert.SerializeObject(items);
+            return _getSubDirectories(currentDir + "\\");
         }
 
         /// <summary>
@@ -106,29 +101,33 @@ namespace mongoDriver
             return true;
         }
 
-        /// <summary>Given a paramterized path, provides all of the subdirectories as a list of strings</summary>
-        /// <param name="currentDir">The current directory that is being searched</param>
-        /// <returns>A list of strings representing each directory or null if invalid</returns>
-        private Queue<String> _getSubDirectories(String currentDir)
+        /// <summary>Given a paramterized path, provides all of the subdirectories as a BSON document</summary>
+        /// <param name="currentDir">The current directory to search for subdirectories</param>
+        /// <returns>A BSON document representing each directory or null if invalid/empty</returns>
+        private BsonDocument _getSubDirectories(String currentDir)
         {
-            Queue<String> itemsQueue = null;
+            String[] subDirectories = null;
+            BsonDocument items = null;
+            int count = 1;
 
             // if the current directory is an invalid path, return null
             if (string.IsNullOrEmpty(currentDir))
-                return itemsQueue;
+                return items;
 
-            // Grab subdirectories and enqueue
-            String[] subDirectories = Directory.GetDirectories(currentDir);
+            // Grab subdirectories (full-path)
+            subDirectories = Directory.GetDirectories(currentDir);
 
             if (subDirectories.Length > 0) {
-                itemsQueue = new Queue<string>();
+                items = new BsonDocument();
             }
 
+            // Create a BSON document with the key/values
             foreach (String dir in subDirectories) { 
-                String newDir = dir.Replace(currentDir, "");
-                itemsQueue.Enqueue(newDir);
+                BsonValue itemValue = dir.Replace(currentDir, "");
+                items.Add(count.ToString(), itemValue);
+                count++;
             }
-            return itemsQueue;
+            return items;
         }
     }
 }
