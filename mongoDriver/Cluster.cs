@@ -86,15 +86,24 @@ namespace mongoDriver
         }
 
         /// <summary>Import parameterized data into collection</summary>
-        /// <param name="JSONDocument">JSON document to import</param>
+        /// <param name="JSONdocument">JSON document to import</param>
         /// <returns>True if import was successful, False, otherwise</returns>
-        public bool importData(String JSONDocument)
+        public bool importData(String JSONdocument)
         {
-            if (string.IsNullOrEmpty(JSONDocument))
+            if (string.IsNullOrEmpty(JSONdocument))
                 return false;
 
-            // TODO: next steps are importing data
-            Console.WriteLine("\nNext step is importing data into Atlas");
+            // convert JSON to BSON document
+            // source: file:\C:\Users\mduer\git\mongodb-driver\mongoDriver\bin\Debug\netcoreapp3.0
+
+            Console.WriteLine($"JSON: {JSONdocument}");
+            Console.WriteLine("Next Step: convert JSON to BSON...WIP");
+            /*
+            foreach (var item in JSONdocument) { 
+                BsonDocument doc = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(item);
+                _collection.InsertOne(doc);
+            }
+            */
             return true;
         }
 
@@ -173,6 +182,20 @@ namespace mongoDriver
             }
         }
 
+        /// <summary>Create a new collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to create</param>
+        public void createCollection(String collectionName)
+        {
+            _createCollection(collectionName);
+        }
+
+        /// <summary>Drop a collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to drop</param>
+        public void dropCollection(String collectionName)
+        {
+            _dropCollection(collectionName);
+        }
+
         /// <summary>Display document contents in JSON</summary>
         /// <param name="filter">A BsonDocument object to use as a filter for like objects</param>
         private void _displayCollectionDocumentsJSON(BsonDocument filter)
@@ -205,6 +228,20 @@ namespace mongoDriver
                     }
                 }
             }
+        }
+
+        /// <summary>Create a new collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to create</param>
+        private void _createCollection(String collectionName)
+        {
+            _db.CreateCollection(collectionName);
+        }
+
+        /// <summary>Drop a collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to drop</param>
+        private void _dropCollection(String collectionName)
+        {
+            _db.DropCollection(collectionName);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace mongoDriver
         {
             Data data = null;
             Cluster cluster = null;
-            var countries = null;
+            String countries = "";
 
             // If data needs to be imported, find the workingDirectory containing
             // the dataset and import it. Exit the program if the import failed.
@@ -31,19 +31,37 @@ namespace mongoDriver
             // Connect to the existing cluster, database, and collection(s) to run queries
             if (connectCluster(ref cluster))
             {
-                // provide statistics on cluster as proof-of-concept (e.g. count, document contents)
-                Console.WriteLine($"total documents in collection: {cluster.countDocuments()}");
-                cluster.displayCollectionDocuments();
+                try
+                {
+                    // provide statistics on cluster as proof-of-concept (e.g. count, document contents)
 
-                Console.WriteLine($"\nAttempting to import the following JSON of countries: \n{countries}");
+                    Console.WriteLine("\nTotal documents in collection:");
+                    Console.WriteLine(cluster.countDocuments());
 
-                if (cluster.importData(countries))
-                    Console.WriteLine("\nYay! Data was successfully imported. Validate by check Atlas.");
-                else
-                { 
-                    Console.WriteLine("\nCrap -- some error with importing data. Further investigation needed.");
+                    Console.WriteLine("\nDocument Contents:");
+                    cluster.displayCollectionDocuments();
+
+                    // Insert data
+                    Console.WriteLine($"\nAttempting to import JSON data.");
+                    if (cluster.importData(countries))
+                        Console.WriteLine("\nYay! Data was successfully imported. Validate by check Atlas.");
+                    else
+                    {
+                        Console.WriteLine("\nCrap -- some error with importing data. Further investigation needed.");
+                        Environment.Exit(1);
+                    }
+
+                }
+                catch (TimeoutException err)
+                {
+                    Console.WriteLine("\nTimeout Error.\nA common mistake is not white-listing the current IP. Make sure the current IP is WHITELISTED!\n\n\n");
+                    Console.WriteLine(err);
                     Environment.Exit(1);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Failed to connect to cluster, db, or collection.");
             }
 
             // Print out to confirm the program is ending
