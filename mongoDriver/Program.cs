@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MongoDB.Bson;
 
 namespace mongoDriver
 {
@@ -9,6 +10,7 @@ namespace mongoDriver
         {
             Data data = null;
             Cluster cluster = null;
+            BsonDocument countries = null;
 
             // If data needs to be imported, find the workingDirectory containing
             // the dataset and import it. Exit the program if the import failed.
@@ -18,13 +20,7 @@ namespace mongoDriver
                 if (data.getDataDirectory())
                 { 
                     Console.WriteLine($"\nFound working directory: {data.DataDir}");
-                    var JSONdocument = data.getSubDirectories();
-                    Console.WriteLine($"\nJSON of subdirectories: \n{JSONdocument}");
-
-                    if (data.importData(JSONdocument))
-                        Console.WriteLine("\nYay! Data was successfully imported");
-                    else
-                        Console.WriteLine("\nCrap -- some error with importing data. Further investigation needed.");
+                    countries = data.getSubDirectories("countries");
                 }
             }
             catch (DirectoryNotFoundException err)
@@ -33,16 +29,36 @@ namespace mongoDriver
                 Environment.Exit(1);
             }
 
-            /*
-
             // Connect to the existing cluster, database, and collection(s) to run queries
             if (connectCluster(ref cluster))
             {
-                // provide statistics on cluster as proof-of-concept (e.g. count, document contents)
-                Console.WriteLine($"total documents in collection: {cluster.countDocuments()}");
-                cluster.displayCollectionDocuments();
+                try
+                {
+                    // provide statistics on cluster as proof-of-concept (e.g. count, document contents)
+
+                    Console.WriteLine("\nTotal documents in collection:");
+                    Console.WriteLine(cluster.countDocuments());
+
+                    Console.WriteLine("\nDocument Contents:");
+                    cluster.displayCollectionDocuments();
+
+                    // Insert data
+                    Console.WriteLine($"\nAttempting to import JSON data.");
+                    cluster.importData(countries);
+                    Console.WriteLine("\nYay! Data was successfully imported. Validate by check Atlas.");
+
+                }
+                catch (TimeoutException err)
+                {
+                    Console.WriteLine("\nTimeout Error.\nA common mistake is not white-listing the current IP. Make sure the current IP is WHITELISTED!\n\n\n");
+                    Console.WriteLine(err);
+                    Environment.Exit(1);
+                }
             }
-            */
+            else
+            {
+                Console.WriteLine("Failed to connect to cluster, db, or collection.");
+            }
 
             // Print out to confirm the program is ending
             Console.WriteLine("\nProgram successfully ended");
@@ -64,6 +80,7 @@ namespace mongoDriver
             try
             {
                 if (cluster.establishConnection() && cluster.accessDb(dbName) && cluster.accessCollection(collectionName)) {
+                    Console.WriteLine($"\nConnection successfully established with cluster, database {dbName}, and collection {collectionName}.");
                     return true;
                 }
             }
@@ -82,5 +99,4 @@ namespace mongoDriver
             return false;
         }
     }
-
 }

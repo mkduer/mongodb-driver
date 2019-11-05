@@ -85,6 +85,17 @@ namespace mongoDriver
             }
         }
 
+        /// <summary>Import parameterized data into collection</summary>
+        /// <param name="data">A BSON document of data</param>
+        /// <returns>True if import was successful, False, otherwise or if null</returns>
+        public void importData(BsonDocument data)
+        {
+            if (data.IsBsonNull)
+                return;
+
+            this._importData(data);
+        }
+
         /// <summary>Establishes connection to cluster</summary>
         /// <returns>True if connection was established, False, otherwise</returns>
         private bool _establishConnection()
@@ -159,6 +170,20 @@ namespace mongoDriver
             }
         }
 
+        /// <summary>Create a new collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to create</param>
+        public void createCollection(String collectionName)
+        {
+            this._createCollection(collectionName);
+        }
+
+        /// <summary>Drop a collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to drop</param>
+        public void dropCollection(String collectionName)
+        {
+            this._dropCollection(collectionName);
+        }
+
         /// <summary>Display document contents in JSON</summary>
         /// <param name="filter">A BsonDocument object to use as a filter for like objects</param>
         private void _displayCollectionDocumentsJSON(BsonDocument filter)
@@ -191,6 +216,28 @@ namespace mongoDriver
                     }
                 }
             }
+        }
+
+        /// <summary>Create a new collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to create</param>
+        private void _createCollection(String collectionName)
+        {
+            this._db.CreateCollection(collectionName);
+        }
+
+        /// <summary>Drop a collection in the cluster</summary>
+        /// <param name="collectionName">The name of the collection to drop</param>
+        private void _dropCollection(String collectionName)
+        {
+            this._db.DropCollection(collectionName);
+        }
+
+        /// <summary>Import parameterized data into collection</summary>
+        /// <param name="data">A BSON document of data</param>
+        /// <returns>True if import was successful, False, otherwise or if null</returns>
+        public void _importData(BsonDocument data)
+        {
+            this._collection.InsertOne(data);
         }
     }
 }
